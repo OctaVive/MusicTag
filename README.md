@@ -32,14 +32,6 @@ Do **not** expose this app directly to the public internet.
   - Single-track cover preview + replace
   - Optional bulk cover apply (checkbox-gated)
   - Bulk cover remove/set tools
-- Advanced toolbox actions:
-  - Filename parser preview/apply
-  - Preset save/load/apply
-  - Auto-number preview/apply
-  - Bulk change preview
-  - Undo last operation
-  - Quality check
-  - Metadata lookup
 - Lock/unlock safety switch before writes
 - Save progress indicator + status messaging
 - Theme selector with multiple color themes affecting full UI/icons
@@ -72,9 +64,9 @@ Do **not** expose this app directly to the public internet.
 ## Docker
 
 1. Ensure Docker and Docker Compose are installed.
-2. Provide your music path:
-   - Option A: set `MUSIC_LIBRARY_PATH` (absolute path on your host)
-   - Option B: put music under `./music` in this repo (default fallback)
+2. Set your music folder path before running:
+   - `MUSIC_LIBRARY_PATH=/path/to/your/music`
+   - Replace `/path/to/your/music` with your actual host music directory.
 3. Start with Docker Compose:
    - `docker compose up --build`
 4. Open [http://127.0.0.1:8000](http://127.0.0.1:8000)
