@@ -1,8 +1,8 @@
-# MusicTag
+# MusicTag (Still in development)
 
 MusicTag is a Django web app for browsing a music library and editing metadata in single-track and bulk workflows.
 
-This app was built with [Cursor](https://cursor.com/).
+This app was built with the help of [Cursor](https://cursor.com/).
 
 <img width="1533" height="883" alt="image" src="https://github.com/user-attachments/assets/6ce313db-7034-4e6a-9e53-529938c1e53f" />
 
@@ -75,9 +75,7 @@ Do **not** expose this app directly to the public internet.
 ## Docker
 
 1. Ensure Docker and Docker Compose are installed.
-2. Provide your music path:
-   - Option A: set `MUSIC_LIBRARY_PATH` (absolute path on your host)
-   - Option B: put music under `./music` in this repo (default fallback)
+2. Change /path/to/your/music to your actual music path in the docker compose
 3. Start with Docker Compose:
    - `docker compose up --build`
 4. Open [http://127.0.0.1:8000](http://127.0.0.1:8000)
