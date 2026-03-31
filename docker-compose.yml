@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: musictag-web
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_DEBUG: "true"
+      DJANGO_ALLOWED_HOSTS: "*"
+      MUSIC_ROOT: /music
+    volumes:
+      - .:/app
+      - /path/to/your/music:/music
+    restart: unless-stopped
