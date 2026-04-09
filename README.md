@@ -4,6 +4,9 @@ MusicTag is a Django web app for browsing a music library and editing metadata i
 
 This app was built with [Cursor](https://cursor.com/).
 
+<img width="1818" height="1013" alt="image" src="https://github.com/user-attachments/assets/0d03e5f1-b90f-4b2d-b71c-395b81cf79af" />
+
+
 ## Security Warning
 
 MusicTag is intended for local use only (localhost or trusted local network).
