@@ -104,6 +104,7 @@ const treeCoverCache = new Map();
 const treeCoverPending = new Map();
 let treeThumbObserver = null;
 let playerIsSeeking = false;
+let shouldAutoplayAfterSelect = false;
 isToolsOpen = false;
 
 function getCookie(name) {
@@ -176,6 +177,30 @@ function isTypingTarget(target) {
   return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
 }
 
+async function startPlaybackWithFallback() {
+  try {
+    await audioPreview.play();
+    return true;
+  } catch {
+    return new Promise((resolve) => {
+      const onCanPlay = async () => {
+        audioPreview.removeEventListener("canplay", onCanPlay);
+        try {
+          await audioPreview.play();
+          resolve(true);
+        } catch {
+          resolve(false);
+        }
+      };
+      audioPreview.addEventListener("canplay", onCanPlay, { once: true });
+      setTimeout(() => {
+        audioPreview.removeEventListener("canplay", onCanPlay);
+        resolve(false);
+      }, 1200);
+    });
+  }
+}
+
 async function navigateTrack(direction) {
   const fileButtons = Array.from(treeRoot.querySelectorAll(".file-node[data-path]"));
   if (!fileButtons.length) return;
@@ -187,6 +212,7 @@ async function navigateTrack(direction) {
   if (nextIndex === currentIndex && currentIndex >= 0) return;
   const target = fileButtons[nextIndex];
   if (!target) return;
+  shouldAutoplayAfterSelect = true;
   await selectFile(target);
 }
 
@@ -478,6 +504,8 @@ function findNodeByPath(node, path) {
 }
 
 async function selectFile(button) {
+  const shouldAutoPlay = shouldAutoplayAfterSelect || !audioPreview.paused;
+  shouldAutoplayAfterSelect = false;
   const path = button.dataset.path;
   const res = await fetch(`/api/file?path=${encodeURIComponent(path)}`);
   const body = await parseJsonSafe(res);
@@ -501,7 +529,14 @@ async function selectFile(button) {
   coverPreview.src = body.tags.cover_data_url || placeholderCover;
   syncPlayerMeta(body.tags, body.path);
   treeCoverCache.set(path, body.tags.cover_data_url || null);
+  audioPreview.autoplay = shouldAutoPlay;
   audioPreview.src = `/api/audio?path=${encodeURIComponent(path)}`;
+  if (shouldAutoPlay) {
+    const started = await startPlaybackWithFallback();
+    if (!started) {
+      setStatus("Track loaded. Press play to start audio.");
+    }
+  }
   if (!selectedFiles.has(path)) {
     selectedFiles.clear();
     selectedFiles.add(path);

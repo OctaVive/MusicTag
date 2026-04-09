@@ -1,5 +1,7 @@
 :root {
   color-scheme: dark;
+  --player-seam-gap: 0.35rem;
+  --player-reserved-height: 5.8rem;
   --tree-width: 320px;
   --tree-handle-width: 8px;
   --bg: #07050e;
@@ -273,13 +275,18 @@ body {
   color: var(--text);
   min-height: 100vh;
   letter-spacing: 0.01em;
+  overflow: hidden;
 }
 
 .app-shell {
-  max-width: min(1500px, 98vw);
-  margin: 0.8rem auto;
-  padding: 0 0.7rem;
-  padding-bottom: 6.4rem;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem calc(var(--player-reserved-height) + var(--player-seam-gap));
 }
 
 .app-header {
@@ -314,6 +321,10 @@ body {
   grid-template-columns: minmax(240px, var(--tree-width)) var(--tree-handle-width) minmax(0, 1fr);
   gap: 0.5rem;
   align-items: stretch;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  margin-bottom: var(--player-seam-gap);
 }
 
 .panel {
@@ -331,10 +342,19 @@ body {
 
 .tree-panel {
   min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .editor-panel {
   min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  min-height: 0;
 }
 
 .tree-resize-handle {
@@ -383,9 +403,13 @@ body {
 
 .tree {
   margin-top: 0.75rem;
-  max-height: calc(100vh - 170px);
-  overflow: auto;
+  max-height: none;
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
   padding-right: 0.25rem;
+  scrollbar-gutter: stable;
 }
 
 .tree-toolbar {
@@ -776,10 +800,13 @@ body {
 }
 
 .player-bar {
-  position: sticky;
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
   bottom: 0.6rem;
-  z-index: 15;
-  margin-top: 0.7rem;
+  z-index: 40;
+  margin-top: 0;
+  padding-top: 0.2rem;
 }
 
 .player-bar-inner {
@@ -900,6 +927,10 @@ body {
 .player-volume {
   width: 100%;
   accent-color: var(--accent);
+}
+
+.player-volume {
+  max-width: 88px;
 }
 
 .player-right {
@@ -1130,6 +1161,8 @@ body::before {
 
   .layout {
     grid-template-columns: 1fr;
+    height: 100%;
+    min-height: 0;
   }
 
   .tree-resize-handle {
@@ -1140,8 +1173,13 @@ body::before {
     grid-template-columns: 1fr;
   }
 
+  .player-bar {
+    left: 0.6rem;
+    right: 0.6rem;
+  }
+
   .app-shell {
-    padding-bottom: 5.6rem;
+    padding-bottom: calc(var(--player-reserved-height) + var(--player-seam-gap));
   }
 
   .editor-core {
