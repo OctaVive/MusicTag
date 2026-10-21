@@ -2,6 +2,9 @@
 
 A local, server-rendered workspace for browsing and editing music files. Python 3.12+, Django 5.2, SQLite, Mutagen, and Pillow; no Node build, CDN, telemetry, accounts, or remote streaming service.
 
+<img width="1398" height="766" alt="image" src="https://github.com/user-attachments/assets/966cf469-15a3-46e9-875a-68849c82b532" />
+
+
 ## Run locally
 
 ```powershell
