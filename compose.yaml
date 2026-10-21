@@ -1,0 +1,13 @@
+services:
+  musictag:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - musictag-state:/state
+      - ${MUSIC_FOLDER:-./music}:/music
+    environment:
+      ALLOWED_HOSTS: localhost,127.0.0.1
+    restart: unless-stopped
+volumes:
+  musictag-state:

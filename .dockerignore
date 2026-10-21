@@ -1,9 +1,6 @@
-.git
 .venv
+.musictag_state
+.env
 __pycache__
-*.pyc
-*.pyo
-*.pyd
-db.sqlite3
-staticfiles
-agent-transcripts
+.pytest_cache
+.ruff_cache

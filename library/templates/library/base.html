@@ -1,0 +1,49 @@
+{% load static %}<!doctype html>
+<html lang="en" data-theme="system" data-accent="indigo">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% if heading %}{{ heading }} · {% endif %}MusicTag</title>
+  <meta name="htmx-config" content='{"selfRequestsOnly":true,"responseHandling":[{"code":"204","swap":false},{"code":"[23]..","swap":true},{"code":"422","swap":false,"error":true},{"code":"[45]..","swap":false,"error":true}]}'>
+  <script src="{% static 'library/js/theme.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'library/css/app.css' %}">
+  <script src="{% static 'library/vendor/htmx.min.js' %}" defer></script>
+  <script src="{% static 'library/vendor/alpine.min.js' %}" defer></script>
+  <script src="{% static 'library/js/app.js' %}" type="module"></script>
+</head>
+<body hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'>
+<header class="topbar">
+  <a class="brand" href="/" aria-label="MusicTag home"><span class="brand-icon">♫</span>Music<span>Tag</span><small>LOCAL LIBRARY</small></a>
+  <form class="search" action="/tracks" hx-get="/tracks" hx-target="#workspace" hx-push-url="true" hx-trigger="submit, input changed delay:200ms from:input"><span aria-hidden="true">⌕</span><input id="search" name="q" value="{{ request.GET.q }}" placeholder="Search your library…" aria-label="Search library"><kbd>/</kbd></form>
+  <form action="{% url 'scan' %}" method="post" hx-post="{% url 'scan' %}" hx-target="#workspace">{% csrf_token %}<button class="subtle" title="Incremental rescan">↻ <span>Scan library</span></button></form>{% for active_job in active_jobs %}<a class="job-indicator" href="{% url 'job' active_job.pk %}">{{ active_job.kind }} {{ active_job.done }}/{{ active_job.total }}</a>{% endfor %}
+  <form action="{% url 'lock' %}" method="post" id="lock-form">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">{% if unlocked %}<button class="lock enabled">● Writes enabled</button>{% else %}<input type="hidden" name="unlock" value="1"><button class="lock" data-confirm="Enable writes? Changes will modify your music files. Each write is backed up and undoable.">○ Writes disabled</button>{% endif %}</form>
+  <button class="subtle" id="theme-toggle" title="Cycle light, dark and system theme" aria-label="Change theme">◐</button>
+</header>
+<div class="app-layout">
+<aside class="rail">
+  <span class="eyebrow">YOUR LIBRARY</span>
+  <nav aria-label="Library navigation">
+    <a href="/" hx-get="/" hx-target="#workspace" hx-push-url="true"><span>▦</span> Albums</a>
+    <a href="/tracks" hx-get="/tracks" hx-target="#workspace" hx-push-url="true"><span>☷</span> Tracks <small>{{ track_count }}</small></a>
+    <a href="/folders" hx-get="/folders" hx-target="#workspace" hx-push-url="true"><span>▱</span> Folders</a>
+  </nav>
+  <span class="eyebrow">WORKBENCH</span>
+  <nav aria-label="Tools">
+    <a href="/quality" hx-get="/quality" hx-target="#workspace" hx-push-url="true"><span>◇</span> Quality report</a>
+    <a href="/tools/parser">Filename parser</a><a href="/tools/numbering">Auto-numbering</a><a href="/tools/presets">Presets</a><a href="/tools/lookup">Metadata lookup</a>
+    <a href="/history" hx-get="/history" hx-target="#workspace" hx-push-url="true"><span>↶</span> Undo history</a>
+  </nav>
+  <div class="rail-bottom"><a href="/settings">⚙ Settings</a><small title="{{ library_root }}">{{ library_root|default:'No library selected' }}</small><span class="local-dot">● Offline-first · on your machine</span></div>
+</aside>
+<main id="workspace" tabindex="-1">{% block content %}{% endblock %}</main>
+<aside id="inspector" aria-label="Track inspector"><div class="empty-inspector"><span>♫</span><h3>A little attention to detail.</h3><p>Select a track to inspect its tags.<br>Your originals stay protected.</p></div></aside>
+</div>
+<div id="bulk-bar" hidden><strong id="selected-count">0 tracks selected</strong><button id="edit-selection" class="primary">Edit selection</button><button id="play-selection">Play</button><button id="clear-selection">Clear</button></div>
+<footer class="player" aria-label="Audio player">
+  <div class="now-playing"><div id="player-art" class="mini-art">♫</div><div><strong id="player-title">Nothing playing</strong><small id="player-artist">Choose a track to listen</small></div></div>
+  <div class="playback"><div class="play-buttons"><button id="shuffle" aria-label="Shuffle" aria-pressed="false">⤨</button><button id="previous" aria-label="Previous track">⏮</button><button id="play" class="play-circle" aria-label="Play or pause">▶</button><button id="next" aria-label="Next track">⏭</button><button id="repeat" aria-label="Repeat mode">↻</button></div><div class="seek"><small id="elapsed">0:00</small><input type="range" id="seek" min="0" max="100" value="0" step="0.1" aria-label="Seek"><small id="total">0:00</small></div></div>
+  <div class="volume"><button id="mute" aria-label="Mute">♪</button><input type="range" id="volume" min="0" max="1" step="0.01" value="0.8" aria-label="Volume"><button id="queue-toggle" aria-label="Show queue">☷</button></div><audio id="audio" preload="metadata"></audio>
+</footer>
+<dialog id="queue-dialog"><h2>Play queue</h2><ol id="queue-list"></ol><button data-close-dialog>Close</button></dialog>
+<dialog id="shortcuts"><h2>Keyboard shortcuts</h2><p><kbd>/</kbd> Search · <kbd>j / k</kbd> Move through tracks · <kbd>Enter</kbd> Edit</p><p><kbd>Space</kbd> Play/pause · <kbd>Ctrl+S</kbd> Save · <kbd>Esc</kbd> Close</p><p><kbd>g a / g t / g f</kbd> Albums / tracks / folders</p><p><kbd>← / →</kbd> Seek · <kbd>Shift+← / →</kbd> Previous / next</p><p><kbd>M</kbd> Mute · <kbd>Ctrl+Z</kbd> History</p><button data-close-dialog>Close</button></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body></html>

@@ -1,0 +1,15 @@
+[project]
+name = "musictag"
+version = "1.0.0"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["test_*.py"]
+
+[tool.ruff]
+line-length = 110
+exclude = ["library/migrations", ".venv"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]

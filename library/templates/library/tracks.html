@@ -1,0 +1,3 @@
+{% extends base_template %}{% block content %}<div class="page-header"><div><span class="eyebrow">THE DETAILS MAKE THE DIFFERENCE</span><h1>Tracks <small>{{ result_count }}</small></h1><p>Your collection, one track at a time.</p></div><button class="button" data-play-context>▶ Play view</button></div>{% include 'library/filters.html' %}
+<div class="section-line"><span>{{ page.paginator.count }} tracks · 100 per page</span><button id="select-filtered" class="subtle">Select all filtered</button></div>
+{% include 'library/track_table.html' with tracks=page %}{% include 'library/pagination.html' %}{% endblock %}

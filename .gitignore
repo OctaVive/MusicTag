@@ -1,12 +1,9 @@
 .venv/
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
 .pytest_cache/
-.mypy_cache/
 .ruff_cache/
+.musictag_state/
+.env
+htmlcov/
 .coverage
-db.sqlite3
-staticfiles/
-agent-transcripts/

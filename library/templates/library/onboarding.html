@@ -1,0 +1,5 @@
+{% extends base_template %}{% block content %}
+<section class="onboarding"><div class="eyebrow">WELCOME TO MUSICTAG</div><div class="welcome-icon">♫</div><h1>Your music.<br>Beautifully organized.</h1><p>A thoughtful workspace for the music you own.<br>Browse your collection, repair tags, and make every album feel complete.</p>
+<form method="post" class="setup-form">{% csrf_token %}<label for="root">Where does your music live?</label><input id="root" name="root" placeholder="C:\Music or /home/you/Music" required autofocus><small>Enter an absolute folder path on the server. Subfolders are included.</small>{% if error %}<p class="error">{{ error }}</p>{% endif %}<button class="primary">Choose folder & scan →</button></form>
+<div class="welcome-promises"><span>◈ Entirely local</span><span>↶ Every edit undoable</span><span>◇ Originals protected</span></div><p class="muted">Single user, local machine only. Keep the server bound to 127.0.0.1.</p></section>
+{% endblock %}
